@@ -8,7 +8,7 @@ const initialValues = {
   number: "",
 };
 
-const ContactFormSchema = yup.object().shap({
+const ContactFormSchema = yup.object().shape({
   name: yup
     .string()
     .min(3, "Too Short!")
