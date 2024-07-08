@@ -2,7 +2,7 @@ import ContactForm from "./components/ContactForm/ContactForm";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactList from "./components/ContactList/ContactList";
 import css from "./App.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Contacts = [
   { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
@@ -12,10 +12,17 @@ const Contacts = [
 ];
 
 const App = () => {
-  const [contacts, setContacts] = useState(Contacts);
+  const [contacts, setContacts] = useState(() => {
+    const savedContacts = window.localStorage.getItem("saved-contacts");
+    if (savedContacts.length !== null) {
+      return JSON.parse(savedContacts);
+    }
+    return Contacts;
+  });
+
   const addContact = (newContact) => {
-    setContacts((prevContacts) => {
-      return [...prevContacts, newContact];
+    setContacts((contacts) => {
+      return [...contacts, newContact];
     });
   };
   const [filter, setFilter] = useState("");
@@ -27,6 +34,10 @@ const App = () => {
       return prevContacts.filter((contact) => contact.id !== contactId);
     });
   };
+  useEffect(() => {
+    window.localStorage.setItem("saved-contacts", JSON.stringify(contacts));
+  }, [contacts]);
+
   return (
     <div className={css.container}>
       <h1>Phonebook</h1>
